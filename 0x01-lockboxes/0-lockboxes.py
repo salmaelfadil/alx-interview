@@ -12,7 +12,7 @@ def canUnlockAll(boxes):
     while new_boxes:
         current_box = new_boxes.pop()
 
-        if current_box < 0 or current_box >= n or current_box in unlocked_boxes:
+        if current_box >= n or current_box in unlocked_boxes:
             continue
 
         unlocked_boxes.add(current_box)
