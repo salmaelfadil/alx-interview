@@ -17,7 +17,7 @@ def minOperations(n):
         if n % current_char == 0:
             clipboard = current_char
             operations += 2
-            current_char *= 2
+            current_char += clipboard
         else:
             operations += 1
             current_char += clipboard
