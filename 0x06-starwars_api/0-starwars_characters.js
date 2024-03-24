@@ -4,36 +4,46 @@ const request = require('request');
 let url = "https://swapi-api.alx-tools.com/api/films/" + process.argv[2];
 
 function getData(url) {
-    request(url, (error, response, body) => {
-        if (error) {
-            console.error(error);
-            return;
-        }
-        try {
-            const data = JSON.parse(body).characters;
-            getChars(data);
-        } catch (parseError) {
-            console.error("Error Parsing");
-        }
-    });
-}
-
-function getChars(data) {
-    data.forEach(url => {
+    return new Promise((resolve, reject) => {
         request(url, (error, response, body) => {
             if (error) {
-                console.error(error);
+                reject(error);
                 return;
             }
             try {
-                const chars = JSON.parse(body);
-                console.log(chars.name);
+                const characters = JSON.parse(body).characters;
+                resolve(characters);
             } catch (parseError) {
-                console.error("Error parsing JSON");
+                reject(new Error("Error parsing film data"));
             }
         });
     });
 }
 
-getData(url);
+function getChars(characters) {
+    const promises = characters.map(url => {
+        return new Promise((resolve, reject) => {
+            request(url, (error, response, body) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                try {
+                    const character = JSON.parse(body);
+                    resolve(character.name);
+                } catch (parseError) {
+                    reject(new Error("Error parsing character data"));
+                }
+            });
+        });
+    });
+    Promise.all(promises)
+        .then(names => {
+            names.forEach(name => console.log(name));
+        })
+        .catch(error => console.error(error));
+}
+getData(url)
+    .then(getChars)
+    .catch(error => console.error(error));
 
