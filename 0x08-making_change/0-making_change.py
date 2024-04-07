@@ -5,8 +5,10 @@
 def makeChange(coins, total):
     """provide change"""
     num_coins = 0
-    if total == 0 or not coins:
-        return num_coins;
+    if not coins:
+        return -1
+    if total == 0:
+        return num_coins
     while (total) and coins != []:
         big = max(coins)
         num_coins = num_coins + (total // big)
